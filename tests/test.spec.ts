@@ -1,7 +1,7 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import "dotenv/config";
 
-test("test", async ({ page }) => {
+const login = async ({ page }: { page: Page }) => {
   await page.goto("http://localhost:3000/");
   await page.getByLabel("Email address").click();
   await page
@@ -13,5 +13,11 @@ test("test", async ({ page }) => {
     .getByLabel("Password", { exact: true })
     .fill(process.env.PLAYWRIGHT_TESTUSER_PASSWORD!);
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByText("Get started")).toBeVisible();
+};
+
+test.beforeEach(login);
+
+test("test", async ({ page }) => {
+  await page.goto("http://localhost:3000/");
+  await expect(page.getByText("¡Hola casa!")).toBeVisible();
 });
